@@ -1,4 +1,4 @@
-# youtube-data-harvesting-and-warehousing
+# Youtube Data Harvesting and Warehousing:
 
 from googleapiclient.discovery import build
 import pymongo
@@ -96,7 +96,8 @@ def get_video_info(video_ids):
                      )
             video_data.append(data)
     return video_data
-      
+        
+
 
 # # Get Comment Info 
 
@@ -157,10 +158,12 @@ def get_Playlist_details(channel_id):
 client=pymongo.MongoClient("mongodb://localhost:27017/")
 db=client["youtube_data_harvesting"]
 
+
 client
 
 
 # # Data Transfer TO Mongodb
+
 
 def channel_details(channel_id):
     ch_details=get_channel_id(channel_id)
@@ -240,6 +243,8 @@ def channel_table():
                 print("table already created")
 
     
+ 
+
 
 # # Playlist Table Creation  In  Postgresql
 
@@ -519,7 +524,7 @@ channels = [ch.strip() for ch in channels if ch]
 if st.button("Collect and Store data"):
     for channel in channels:
         ch_ids = []
-        db = client["Youtube_data"]
+        db = client["youtube_data_harvesting"]
         coll1 = db["channel_details"]
         for ch_data in coll1.find({},{"_id":0,"channel_information":1}):
             ch_ids.append(ch_data["channel_information"]["Channel_Id"])
@@ -564,7 +569,7 @@ question = st.selectbox(
      '5. Videos with highest likes',
      '6. likes of all videos',
      '7. views of each channel',
-     '8. videos published in the year 2022',
+     '8. videos puplished in the year 2022',
      '9. average duration of all videos in each channel',
      '10. videos with highest number of comments'))
 
@@ -620,13 +625,13 @@ elif question == '7. views of each channel':
     t7=cursor.fetchall()
     st.write(pd.DataFrame(t7, columns=["channel name","total views"]))
 
-elif question == '8. videos published in the year 2022':
-    query8 = '''select Title as Video_Title, Published_Date as VideoRelease, Channel_Name as ChannelName from videos 
-                where extract(year from Published_Date) = 2022;'''
+elif question == '8. videos puplished in the year 2022':
+    query8 = '''select Title as Video_Title, Puplished_Date as VideoRelease, Channel_Name as ChannelName from videos 
+                where extract(year from Puplished_Date) = 2022;'''
     cursor.execute(query8)
     mydb.commit()
     t8=cursor.fetchall()
-    st.write(pd.DataFrame(t8,columns=["Name", "Video Publised On", "ChannelName"]))
+    st.write(pd.DataFrame(t8,columns=["Name", "Video Puplished On", "ChannelName"]))
 
 elif question == '9. average duration of all videos in each channel':
     query9 =  "SELECT Channel_Name as ChannelName, AVG(Duration) AS average_duration FROM videos GROUP BY Channel_Name;"
